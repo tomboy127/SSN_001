@@ -32,11 +32,16 @@ public:
 
     QPointF inpPos;
     QPointF outPos;
+    QGraphicsOpacityEffect* effect;
 
+    void focusInEvent(QFocusEvent*);
+    void focusOutEvent(QFocusEvent*);
 
 
     double value;
+    double opacity=0.5;
 signals:
+    void setInfoTextUi(QString);
 
 };
 

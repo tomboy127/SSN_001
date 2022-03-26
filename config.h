@@ -7,8 +7,8 @@
 #define MAX_OUT 8
 
 #define INPS 2
-#define LRS 1
-#define NRNS 3
+#define LRS 5
+#define NRNS 4
 #define OUTS 2
 
 

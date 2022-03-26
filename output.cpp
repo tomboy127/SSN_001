@@ -24,6 +24,10 @@ void output::del_obj()
 void output::focusInEvent(QFocusEvent *)
 {
     effect->setOpacity(OPAC_F);
+    QString str1="Vala=" + QString::number(value)+"\n";
+    QString str2="Vala_2=" + QString::number(value*2)+"\n";
+
+    emit setInfoTextUi(str1+str2);
 }
 
 void output::focusOutEvent(QFocusEvent *)

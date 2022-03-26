@@ -7,6 +7,7 @@
 
 class neuron : public cell
 {
+    Q_OBJECT
 public:
     neuron();
 
@@ -16,7 +17,6 @@ public:
 
     void del_obj();
 
-
     double value;
     QGraphicsOpacityEffect *effect;
 
@@ -24,6 +24,7 @@ public:
     void focusOutEvent(QFocusEvent*);
 
 signals:
+    void setInfoTextUi(QString);
 
 };
 

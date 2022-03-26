@@ -7,6 +7,7 @@
 
 class output : public cell
 {
+    Q_OBJECT
 public:
     output();
 
@@ -24,6 +25,7 @@ public:
     void focusOutEvent(QFocusEvent*);
 
 signals:
+    void setInfoTextUi(QString);
 
 };
 

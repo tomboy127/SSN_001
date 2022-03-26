@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->sBox_neurons->setValue(NRNS);
     ui->sBox_outputs->setValue(OUTS);
 
-    //generate_neurons();
+    //generate_network();
 
 }
 
@@ -36,101 +36,71 @@ MainWindow::~MainWindow()
 
 void MainWindow::generate_neurons()
 {
-    if(neurons_generated){
-
-        for(int i=0;i<(inputs);i++){
-            cell_ptrs[0][i]->del_obj();
-            cell_ptrs[0][i]=nullptr;
-        }
-
-        for(int i=1;i<(layers-1);i++){
-            for(int j=0;j<neurons;j++){
-                cell_ptrs[i][j]->del_obj();
-                cell_ptrs[i][j]=nullptr;
-            }
-        }
-
-        for(int i=0;i<(outputs);i++){
-            cell_ptrs[layers-1][i]->del_obj();
-            cell_ptrs[layers-1][i]=nullptr;
-        }
-
-
-        for(int i=0;i<inputs;i++){
-            for(int j=0;j<neurons;j++){
-                axon_ptrs[0][i][j]->del_obj();
-                axon_ptrs[0][i][j]=nullptr;
-            }
-        }
-
-        for(int i=1;i<layers-2;i++) {
-            for(int j=0;j<neurons;j++){
-                for(int k=0;k<neurons;k++){
-                    axon_ptrs[i][j][k]->del_obj();
-                    axon_ptrs[i][j][k]=nullptr;
-                }
-            }
-        }
-
-        for(int i=0;i<neurons;i++){
-            for(int j=0;j<outputs;j++){
-                axon_ptrs[layers-1][i][j]->del_obj();
-                axon_ptrs[layers-1][i][j]=nullptr;
-            }
-        }
-
-         qDebug()<<"Previous config deleted.";
-    }
-
-
     inputs=ui->sBox_inputs->value();
     layers=ui->sBox_layers->value();
     neurons=ui->sBox_neurons->value();
     outputs=ui->sBox_outputs->value();
 
-
     for(int i=0;i<(inputs);i++){
         cell_ptrs[0][i]=new input();
+        QObject::connect(cell_ptrs[0][i], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
     }
 
     for(int i=1;i<(layers-1);i++){
         for(int j=0;j<neurons;j++){
             cell_ptrs[i][j]=new neuron();
+            QObject::connect(cell_ptrs[i][j], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
         }
     }
 
     for(int i=0;i<(outputs);i++){
         cell_ptrs[layers-1][i]=new output();
+        QObject::connect(cell_ptrs[layers-1][i], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
     }
 
-
-    neurons_generated=1;
-    generate_axons();
-    align_neurons();
+    network_generated=1;
 }
 
 void MainWindow::generate_axons()
 {
-    for(int i=0;i<inputs;i++){
+    for(int i=0;i<inputs;i++){      //axon input-neuron
         for(int j=0;j<neurons;j++){
             axon_ptrs[0][i][j] = new axon(cell_ptrs[0][i],cell_ptrs[1][j]);
+            QObject::connect(axon_ptrs[0][i][j], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
+
         }
     }
 
-    for(int i=1;i<layers-2;i++) {
+    for(int i=1;i<layers-2;i++) {   //axon neuron-neuron
         for(int j=0;j<neurons;j++){
             for(int k=0;k<neurons;k++){
-                qDebug()<<i<<j<<k;
+               //qDebug()<<i<<j<<k;
                axon_ptrs[i][j][k]= new axon(cell_ptrs[i][j],cell_ptrs[i+1][k]);
+               QObject::connect(axon_ptrs[i][j][k], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
             }
         }
     }
 
-    for(int i=0;i<neurons;i++){
+    for(int i=0;i<neurons;i++){     //axon neuron-output
         for(int j=0;j<outputs;j++){
             axon_ptrs[layers-1][i][j]= new axon(cell_ptrs[layers-2][i],cell_ptrs[layers-1][j]);
+            QObject::connect(axon_ptrs[layers-1][i][j], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
         }
     }
+
+}
+
+void MainWindow::generate_network()
+{
+    if(network_generated){
+        delete_cells();
+        delete_axons();
+        qDebug()<<"Previous config deleted.";
+    }
+    generate_neurons();
+    generate_axons();
+    align_neurons();
+    align_axons();
 
 }
 
@@ -158,6 +128,11 @@ void MainWindow::align_neurons()
         scene1->addItem(cell_ptrs[layers-1][i]);
     }
 
+    scene1->setSceneRect(QRectF(0,0,w,h));
+}
+
+void MainWindow::align_axons()
+{
     for(int i=0;i<inputs;i++){
         for(int j=0;j<neurons;j++){
             axon_ptrs[0][i][j]->upPos();
@@ -181,10 +156,10 @@ void MainWindow::align_neurons()
         }
     }
 
-    scene1->setSceneRect(QRectF(0,0,w,h));
+    //scene1->setSceneRect(QRectF(0,0,w,h));
 }
 
-void MainWindow::update_aligment()
+void MainWindow::update_aligments()
 {
     double w=ui->view_1->width()-2;
     double h=ui->view_1->height()-2;
@@ -228,12 +203,60 @@ void MainWindow::update_aligment()
 
     scene1->setSceneRect(QRectF(0,0,w,h));
 
+}
 
+void MainWindow::delete_cells()
+{
+    for(int i=0;i<layers;i++){
+        for(int j=0;j<inputs && i==0;j++){
+            cell_ptrs[i][j]->del_obj();
+            cell_ptrs[i][j]=nullptr;
+        }
+        for(int k=0;k<neurons && i>0 && i<(layers-1);k++){
+            cell_ptrs[i][k]->del_obj();
+            cell_ptrs[i][k]=nullptr;
+        }
+        for(int l=0;l<outputs && i==(layers-1);l++){
+            cell_ptrs[i][l]->del_obj();
+            cell_ptrs[i][l]=nullptr;
+        }
+    }
+}
+
+void MainWindow::delete_axons()
+{
+    for(int i=0;i<inputs;i++){
+        for(int j=0;j<neurons;j++){
+            axon_ptrs[0][i][j]->del_obj();
+            axon_ptrs[0][i][j]=nullptr;
+        }
+    }
+
+    for(int i=1;i<layers-2;i++) {
+        for(int j=0;j<neurons;j++){
+            for(int k=0;k<neurons;k++){
+                axon_ptrs[i][j][k]->del_obj();
+                axon_ptrs[i][j][k]=nullptr;
+            }
+        }
+    }
+
+    for(int i=0;i<neurons;i++){
+        for(int j=0;j<outputs;j++){
+            axon_ptrs[layers-1][i][j]->del_obj();
+            axon_ptrs[layers-1][i][j]=nullptr;
+        }
+    }
 }
 
 void MainWindow::resizeEvent(QResizeEvent *)
 {
-    if(neurons_generated) update_aligment();
+    if(network_generated) update_aligments();
+}
+
+void MainWindow::setInfoText(QString text)
+{
+    ui->label_obj_info->setText(text);
 }
 
 QGraphicsScene* MainWindow::make_scene_1()
@@ -256,7 +279,6 @@ QGraphicsScene* MainWindow::make_scene_2()
     return scene_2;
 }
 
-
 void MainWindow::on_btn_scene_change_1_clicked()
 {
     ui->view_1->setScene(scene1);
@@ -278,7 +300,7 @@ void MainWindow::on_btn_gen_network_clicked()
     confBox.setDefaultButton(QMessageBox::No);
 
     if(confBox.exec()== QMessageBox::Yes){
-        generate_neurons();
+        generate_network();
     }
     else if(QMessageBox::No){
         qDebug()<<"nie";

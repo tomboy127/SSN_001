@@ -8,7 +8,7 @@
 #include <math.h>
 
 
-class cell: public QObject, public QGraphicsEllipseItem{
+class cell: public QObject, public QGraphicsEllipseItem{    
 public:
     virtual double getVal()=0;
     virtual QPointF getPos()=0;

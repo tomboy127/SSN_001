@@ -24,11 +24,16 @@ void neuron::del_obj()
 void neuron::focusInEvent(QFocusEvent *)
 {
     effect->setOpacity(OPAC_F);
+    QString str1="Val=" + QString::number(value)+"\n";
+    QString str2="Val_2=" + QString::number(value*2)+"\n";
+
+    emit setInfoTextUi(str1+str2);
 }
 
 void neuron::focusOutEvent(QFocusEvent *)
 {
     effect->setOpacity(OPAC_NF);
+    //setInfoTextUi(" ");
 }
 
 double neuron::getVal()

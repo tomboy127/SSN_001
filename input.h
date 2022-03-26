@@ -7,6 +7,7 @@
 
 class input : public cell
 {
+    Q_OBJECT
 public:
     input();
 
@@ -24,6 +25,7 @@ public:
     void focusOutEvent(QFocusEvent*);
 
 signals:
+    void setInfoTextUi(QString);
 
 };
 

@@ -30,13 +30,21 @@ public:
 
     void generate_neurons();
     void generate_axons();
+    void generate_network();
+
     void align_neurons();
-    void update_aligment();
+    void align_axons();
+    void update_aligments();
+
+    void delete_cells();
+    void delete_axons();
+
     int inputs=INPS;
     int layers=LRS;
     int neurons=NRNS;
     int outputs=OUTS;
-    bool neurons_generated=0;
+
+    bool network_generated=0;
 
     //cell* input_ptrs[MAX_INP];
     cell* cell_ptrs[MAX_LR][MAX_NR];
@@ -45,6 +53,9 @@ public:
     axon* axon_ptrs[MAX_LR][MAX_NR][MAX_NR];
 
     void resizeEvent(QResizeEvent*);
+
+public slots:
+    void setInfoText(QString text);
 
 private slots:
 

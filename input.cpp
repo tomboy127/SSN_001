@@ -23,6 +23,10 @@ void input::del_obj()
 void input::focusInEvent(QFocusEvent *)
 {
     effect->setOpacity(OPAC_F);
+    QString str1="Vald=" + QString::number(value)+"\n";
+    QString str2="Vald_2=" + QString::number(value*2)+"\n";
+
+    emit setInfoTextUi(str1+str2);
 }
 
 void input::focusOutEvent(QFocusEvent *)
