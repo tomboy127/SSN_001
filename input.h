@@ -9,14 +9,19 @@ class input : public cell
 {
     Q_OBJECT
 public:
-    input();
+    input(int l, int p);
 
     double getVal();
     QPointF getPos();
+    QString getType();
+    QString getGridPos();
+
     void addVal(double);
 
     void del_obj();
 
+    QString type="Input";
+    QString gridPos;
 
     double value;
     QGraphicsOpacityEffect *effect;

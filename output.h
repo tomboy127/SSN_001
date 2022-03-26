@@ -9,14 +9,18 @@ class output : public cell
 {
     Q_OBJECT
 public:
-    output();
+    output(int l, int p);
 
     double getVal();
     QPointF getPos();
+    QString getType();
+    QString getGridPos();
     void addVal(double);
 
     void del_obj();
 
+    QString type="Output";
+    QString gridPos;
 
     double value;
     QGraphicsOpacityEffect *effect;

@@ -12,6 +12,8 @@ class cell: public QObject, public QGraphicsEllipseItem{
 public:
     virtual double getVal()=0;
     virtual QPointF getPos()=0;
+    virtual QString getType()=0;
+    virtual QString getGridPos()=0;
     virtual void addVal(double)=0;
     virtual void del_obj()=0;
 

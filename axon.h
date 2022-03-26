@@ -34,6 +34,8 @@ public:
     QPointF outPos;
     QGraphicsOpacityEffect* effect;
 
+    QString type="Axon";
+
     void focusInEvent(QFocusEvent*);
     void focusOutEvent(QFocusEvent*);
 

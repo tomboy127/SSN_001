@@ -6,7 +6,6 @@
 
 axon::axon(cell* input_ptr, cell* output_ptr)
 {    
-
   this->setBrush(Qt::yellow);
   setFlag(QGraphicsItem::ItemIsFocusable);
 
@@ -66,10 +65,14 @@ void axon::focusInEvent(QFocusEvent *)
     effect->setOpacity(0.8);
     setZValue(1);
 
-    QString str1="Val=" + QString::number(value)+"\n";
-    QString str2="Val_2=" + QString::number(value*2)+"\n";
+    QString str1;
 
-    emit setInfoTextUi(str1+str2);
+    QString str_out="Type: \t"+type+"\nPath: \t";
+    str_out+=inp_ptr->getGridPos()+" -> "+out_ptr->getGridPos()+"\n";
+
+    str1="Value: \t" + QString::number(value)+"\n";
+
+    emit setInfoTextUi(str_out+str1);
 }
 
 void axon::focusOutEvent(QFocusEvent *)
@@ -77,6 +80,7 @@ void axon::focusOutEvent(QFocusEvent *)
     this->setBrush(Qt::yellow);
     effect->setOpacity(opacity);
     setZValue(0);
+    emit setInfoTextUi("Select object");
 }
 
 void axon::del_obj()

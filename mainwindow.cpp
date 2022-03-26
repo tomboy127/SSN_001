@@ -37,24 +37,24 @@ MainWindow::~MainWindow()
 void MainWindow::generate_neurons()
 {
     inputs=ui->sBox_inputs->value();
-    layers=ui->sBox_layers->value();
+    layers=ui->sBox_layers->value()+2;
     neurons=ui->sBox_neurons->value();
     outputs=ui->sBox_outputs->value();
 
     for(int i=0;i<(inputs);i++){
-        cell_ptrs[0][i]=new input();
+        cell_ptrs[0][i]=new input(1,i+1);
         QObject::connect(cell_ptrs[0][i], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
     }
 
     for(int i=1;i<(layers-1);i++){
         for(int j=0;j<neurons;j++){
-            cell_ptrs[i][j]=new neuron();
+            cell_ptrs[i][j]=new neuron(i,j+1);
             QObject::connect(cell_ptrs[i][j], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
         }
     }
 
     for(int i=0;i<(outputs);i++){
-        cell_ptrs[layers-1][i]=new output();
+        cell_ptrs[layers-1][i]=new output(layers,i+1);
         QObject::connect(cell_ptrs[layers-1][i], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
     }
 
@@ -254,9 +254,9 @@ void MainWindow::resizeEvent(QResizeEvent *)
     if(network_generated) update_aligments();
 }
 
-void MainWindow::setInfoText(QString text)
+void MainWindow::setInfoText(QString str)
 {
-    ui->label_obj_info->setText(text);
+    ui->label_obj_info->setText(str);
 }
 
 QGraphicsScene* MainWindow::make_scene_1()

@@ -1,8 +1,9 @@
 #include "neuron.h"
 #include <QGraphicsView>
 
-neuron::neuron()
+neuron::neuron(int l, int n)
 {
+    gridPos="L"+QString::number(l)+" N"+QString::number(n);
     this->setRect(-DOTSIZE/2,-DOTSIZE/2,DOTSIZE,DOTSIZE);
     this->setPos(20,20);
     this->setBrush(Qt::green);
@@ -24,16 +25,16 @@ void neuron::del_obj()
 void neuron::focusInEvent(QFocusEvent *)
 {
     effect->setOpacity(OPAC_F);
-    QString str1="Val=" + QString::number(value)+"\n";
-    QString str2="Val_2=" + QString::number(value*2)+"\n";
+    QString str_out="Type: \t"+type+"\nPosition: \t"+gridPos+"\n";
+    QString str1="Value: \t" + QString::number(value)+"\n";
 
-    emit setInfoTextUi(str1+str2);
+    emit setInfoTextUi(str_out+str1);
 }
 
 void neuron::focusOutEvent(QFocusEvent *)
 {
     effect->setOpacity(OPAC_NF);
-    //setInfoTextUi(" ");
+    //emit setInfoTextUi("Select object");
 }
 
 double neuron::getVal()
@@ -49,4 +50,13 @@ QPointF neuron::getPos()
 void neuron::addVal(double val)
 {
     value+=val;
+}
+
+QString neuron::getType(){
+    return type;
+}
+
+QString neuron::getGridPos()
+{
+    return gridPos;
 }

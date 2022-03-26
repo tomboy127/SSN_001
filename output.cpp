@@ -1,8 +1,9 @@
 #include "output.h"
 #include <QGraphicsView>
 
-output::output()
+output::output(int l, int p)
 {
+    gridPos="O"+QString::number(p);
     this->setRect(-DOTSIZE/2,-DOTSIZE/2,DOTSIZE,DOTSIZE);
     this->setPos(20,20);
     this->setBrush(Qt::red);
@@ -24,10 +25,10 @@ void output::del_obj()
 void output::focusInEvent(QFocusEvent *)
 {
     effect->setOpacity(OPAC_F);
-    QString str1="Vala=" + QString::number(value)+"\n";
-    QString str2="Vala_2=" + QString::number(value*2)+"\n";
+    QString str_out="Type: \t"+type+"\nPosition: \t"+gridPos+"\n";
+    QString str1="Value: \t" + QString::number(value)+"\n";
 
-    emit setInfoTextUi(str1+str2);
+    emit setInfoTextUi(str_out+str1);
 }
 
 void output::focusOutEvent(QFocusEvent *)
@@ -48,4 +49,13 @@ QPointF output::getPos()
 void output::addVal(double val)
 {
     value+=val;
+}
+
+QString output::getType(){
+    return type;
+}
+
+QString output::getGridPos()
+{
+    return gridPos;
 }

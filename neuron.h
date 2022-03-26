@@ -9,13 +9,18 @@ class neuron : public cell
 {
     Q_OBJECT
 public:
-    neuron();
+    neuron(int l, int n);
 
     double getVal();
     QPointF getPos();
+    QString getType();
+    QString getGridPos();
     void addVal(double);
 
     void del_obj();
+
+    QString type="Neuron";
+    QString gridPos;
 
     double value;
     QGraphicsOpacityEffect *effect;

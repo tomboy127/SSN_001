@@ -55,7 +55,7 @@ public:
     void resizeEvent(QResizeEvent*);
 
 public slots:
-    void setInfoText(QString text);
+    void setInfoText(QString);
 
 private slots:
 
