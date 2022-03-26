@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "config.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -36,22 +37,24 @@ MainWindow::~MainWindow()
 void MainWindow::generate_neurons()
 {
     if(neurons_generated){
-        for(int i=0;i<inputs;i++){
-            input_ptrs[i]->del_obj();
-            input_ptrs[i]=nullptr;
+
+        for(int i=0;i<(inputs);i++){
+            cell_ptrs[0][i]->del_obj();
+            cell_ptrs[0][i]=nullptr;
         }
 
-        for(int i=0;i<(layers-2);i++){
+        for(int i=1;i<(layers-1);i++){
             for(int j=0;j<neurons;j++){
-                neuron_ptrs[i][j]->del_obj();
-                neuron_ptrs[i][j]=nullptr;
+                cell_ptrs[i][j]->del_obj();
+                cell_ptrs[i][j]=nullptr;
             }
         }
 
-        for(int i=0;i<outputs;i++){
-            output_ptrs[i]->del_obj();
-            output_ptrs[i]=nullptr;
+        for(int i=0;i<(outputs);i++){
+            cell_ptrs[layers-1][i]->del_obj();
+            cell_ptrs[layers-1][i]=nullptr;
         }
+
 
         for(int i=0;i<inputs;i++){
             for(int j=0;j<neurons;j++){
@@ -60,11 +63,11 @@ void MainWindow::generate_neurons()
             }
         }
 
-        for(int i=0;i<layers-3;i++) {
+        for(int i=1;i<layers-2;i++) {
             for(int j=0;j<neurons;j++){
                 for(int k=0;k<neurons;k++){
-                    axon_ptrs[i+1][j][k]->del_obj();
-                    axon_ptrs[i+1][j][k]=nullptr;
+                    axon_ptrs[i][j][k]->del_obj();
+                    axon_ptrs[i][j][k]=nullptr;
                 }
             }
         }
@@ -75,6 +78,17 @@ void MainWindow::generate_neurons()
                 axon_ptrs[layers-1][i][j]=nullptr;
             }
         }
+        /*
+        for(int i=0;i<layers-1;i++) {
+            for(int j=0;j<neurons;j++){
+                for(int k=0;k<neurons;k++){
+                    axon_ptrs[i+1][j][k]->del_obj();
+                    axon_ptrs[i+1][j][k]=nullptr;
+                }
+            }
+        }
+
+        */
          qDebug()<<"Previous config deleted.";
     }
 
@@ -84,22 +98,19 @@ void MainWindow::generate_neurons()
     neurons=ui->sBox_neurons->value();
     outputs=ui->sBox_outputs->value();
 
-    for(int i=0;i<inputs;i++){
-        input_ptrs[i]=new input();
 
-        qDebug()<<"Inp"<<i+1<<"rdy";
+    for(int i=0;i<(inputs);i++){
+        cell_ptrs[0][i]=new input();
     }
 
-    for(int i=0;i<(layers-2);i++){
+    for(int i=1;i<(layers-1);i++){
         for(int j=0;j<neurons;j++){
-            neuron_ptrs[i][j]=new neuron();
-            qDebug()<<"Lr"<<i+1<<"nrn"<<j+1<<"rdy";
+            cell_ptrs[i][j]=new neuron();
         }
     }
 
-    for(int i=0;i<outputs;i++){
-        output_ptrs[i]=new output();
-        qDebug()<<"Out"<<i+1<<"rdy";
+    for(int i=0;i<(outputs);i++){
+        cell_ptrs[layers-1][i]=new output();
     }
 
 
@@ -112,24 +123,25 @@ void MainWindow::generate_axons()
 {
     for(int i=0;i<inputs;i++){
         for(int j=0;j<neurons;j++){
-            axon_ptrs[0][i][j] = new axon(input_ptrs[i],neuron_ptrs[0][j]);
+            axon_ptrs[0][i][j] = new axon(cell_ptrs[0][i],cell_ptrs[1][j]);
         }
     }
 
-    for(int i=0;i<layers-3;i++) {
+    for(int i=1;i<layers-2;i++) {
         for(int j=0;j<neurons;j++){
             for(int k=0;k<neurons;k++){
-                axon_ptrs[i+1][j][k]= new axon(neuron_ptrs[i][j],neuron_ptrs[i+1][k]);
+                qDebug()<<i<<j<<k;
+               axon_ptrs[i][j][k]= new axon(cell_ptrs[i][j],cell_ptrs[i+1][k]);
             }
         }
     }
 
     for(int i=0;i<neurons;i++){
         for(int j=0;j<outputs;j++){
-            axon_ptrs[layers-1][i][j]= new axon(neuron_ptrs[layers-3][i],output_ptrs[j]);
+            axon_ptrs[layers-1][i][j]= new axon(cell_ptrs[layers-2][i],cell_ptrs[layers-1][j]);
         }
     }
-    //axon_ptrs[0][0][0] = new axon(input_ptrs[0],neuron_ptrs[0][0]);
+
 }
 
 void MainWindow::align_neurons()
@@ -139,23 +151,22 @@ void MainWindow::align_neurons()
 
     int columns=layers;
 
-
-    for(int i=0;i<inputs;i++){
-        input_ptrs[i]->setPos((w/(columns+1)),((h/(inputs+1))+(h/(inputs+1))*i));
-        scene1->addItem(input_ptrs[i]);
+    for(int i=0;i<(inputs);i++){
+        cell_ptrs[0][i]->setPos((w/(columns+1)),((h/(inputs+1))+(h/(inputs+1))*i));
+        scene1->addItem(cell_ptrs[0][i]);
     }
 
-    for(int i=0;i<(layers-2);i++){
+    for(int i=1;i<(layers-1);i++){
         for(int j=0;j<neurons;j++){
-            neuron_ptrs[i][j]->setPos((((w/(columns+1)))+(w/(columns+1))*(i+1)),((h/(neurons+1))+(h/(neurons+1))*j));
-            scene1->addItem(neuron_ptrs[i][j]);       
+            cell_ptrs[i][j]->setPos(((w/(columns+1))*(i+1)),((h/(neurons+1))+(h/(neurons+1))*j));
+            scene1->addItem(cell_ptrs[i][j]);
         }
     }
-    for(int i=0;i<outputs;i++){
-        output_ptrs[i]->setPos(((w/(columns+1))*columns),((h/(outputs+1))+(h/(outputs+1))*i));
-        scene1->addItem(output_ptrs[i]);
-    }
 
+    for(int i=0;i<(outputs);i++){
+        cell_ptrs[layers-1][i]->setPos(((w/(columns+1))*columns),((h/(outputs+1))+(h/(outputs+1))*i));
+        scene1->addItem(cell_ptrs[layers-1][i]);
+    }
 
     for(int i=0;i<inputs;i++){
         for(int j=0;j<neurons;j++){
@@ -164,11 +175,11 @@ void MainWindow::align_neurons()
         }
     }
 
-    for(int i=0;i<layers-3;i++) {
+    for(int i=1;i<layers-2;i++) {
         for(int j=0;j<neurons;j++){
             for(int k=0;k<neurons;k++){
-                axon_ptrs[i+1][j][k]->upPos();
-                scene1->addItem(axon_ptrs[i+1][j][k]);
+                axon_ptrs[i][j][k]->upPos();
+                scene1->addItem(axon_ptrs[i][j][k]);
             }
         }
     }
@@ -177,11 +188,8 @@ void MainWindow::align_neurons()
         for(int j=0;j<outputs;j++){
             axon_ptrs[layers-1][i][j]->upPos();
             scene1->addItem(axon_ptrs[layers-1][i][j]);
-
         }
     }
-
-
 
     scene1->setSceneRect(QRectF(0,0,w,h));
 }
@@ -193,19 +201,20 @@ void MainWindow::update_aligment()
 
     int columns=layers;
 
-
-    for(int i=0;i<inputs;i++){
-        input_ptrs[i]->setPos((w/(columns+1)),((h/(inputs+1))+(h/(inputs+1))*i));
+    for(int i=0;i<(inputs);i++){
+        cell_ptrs[0][i]->setPos((w/(columns+1)),((h/(inputs+1))+(h/(inputs+1))*i));
     }
 
-    for(int i=0;i<(layers-2);i++){
+    for(int i=1;i<(layers-1);i++){
         for(int j=0;j<neurons;j++){
-            neuron_ptrs[i][j]->setPos((((w/(columns+1)))+(w/(columns+1))*(i+1)),((h/(neurons+1))+(h/(neurons+1))*j));
+            cell_ptrs[i][j]->setPos(((w/(columns+1))*(i+1)),((h/(neurons+1))+(h/(neurons+1))*j));
         }
     }
-    for(int i=0;i<outputs;i++){
-        output_ptrs[i]->setPos(((w/(columns+1))*columns),((h/(outputs+1))+(h/(outputs+1))*i));
+
+    for(int i=0;i<(outputs);i++){
+        cell_ptrs[layers-1][i]->setPos(((w/(columns+1))*columns),((h/(outputs+1))+(h/(outputs+1))*i));
     }
+
 
     for(int i=0;i<inputs;i++){
         for(int j=0;j<neurons;j++){

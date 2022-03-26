@@ -38,9 +38,9 @@ public:
     int outputs=OUTS;
     bool neurons_generated=0;
 
-    cell* input_ptrs[MAX_INP];
-    cell* neuron_ptrs[MAX_LR][MAX_NR];
-    cell* output_ptrs[MAX_OUT];
+    //cell* input_ptrs[MAX_INP];
+    cell* cell_ptrs[MAX_LR][MAX_NR];
+    //cell* output_ptrs[MAX_OUT];
 
     axon* axon_ptrs[MAX_LR][MAX_NR][MAX_NR];
 
