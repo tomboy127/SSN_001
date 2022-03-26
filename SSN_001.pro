@@ -18,6 +18,7 @@ SOURCES += \
 
 HEADERS += \
     axon.h \
+    cell.h \
     config.h \
     input.h \
     mainwindow.h \

@@ -1,18 +1,24 @@
 #ifndef NEURON_H
 #define NEURON_H
 
-#include <QGraphicsEllipseItem>
-#include <QObject>
 #include <config.h>
+#include <cell.h>
 
 
-class neuron : public QObject, public QGraphicsEllipseItem
+class neuron : public cell
 {
-    Q_OBJECT
 public:
-    explicit neuron();
-    double value;
+    neuron();
+
+    double getVal();
+    QPointF getPos();
+    void addVal(double);
+
     void del_obj();
+
+
+    double value;
+
 signals:
 
 };

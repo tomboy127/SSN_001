@@ -61,13 +61,13 @@
         <item row="1" column="1">
          <widget class="QSpinBox" name="sBox_layers">
           <property name="minimum">
-           <number>1</number>
+           <number>3</number>
           </property>
           <property name="maximum">
            <number>3</number>
           </property>
           <property name="value">
-           <number>1</number>
+           <number>3</number>
           </property>
          </widget>
         </item>

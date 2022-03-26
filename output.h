@@ -1,18 +1,24 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
 
-#include <QGraphicsEllipseItem>
-#include <QObject>
 #include <config.h>
+#include <cell.h>
 
 
-class output : public QObject, public QGraphicsEllipseItem
+class output : public cell
 {
-    Q_OBJECT
 public:
-    explicit output();
-    double value;
+    output();
+
+    double getVal();
+    QPointF getPos();
+    void addVal(double);
+
     void del_obj();
+
+
+    double value;
+
 signals:
 
 };

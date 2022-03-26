@@ -6,9 +6,11 @@
 #include <QMessageBox>
 #include <QtDebug>
 #include <config.h>
+#include "cell.h"
 #include "input.h"
 #include "output.h"
 #include "neuron.h"
+#include "axon.h"
 
 
 
@@ -27,6 +29,7 @@ public:
     QGraphicsScene* scene2;
 
     void generate_neurons();
+    void generate_axons();
     void align_neurons();
     void update_aligment();
     int inputs=INPS;
@@ -35,9 +38,11 @@ public:
     int outputs=OUTS;
     bool neurons_generated=0;
 
-    input* input_ptrs[MAX_INP];
-    neuron* neuron_ptrs[MAX_LR][MAX_NR];
-    output* output_ptrs[MAX_OUT];
+    cell* input_ptrs[MAX_INP];
+    cell* neuron_ptrs[MAX_LR][MAX_NR];
+    cell* output_ptrs[MAX_OUT];
+
+    axon* axon_ptrs[MAX_LR][MAX_NR][MAX_NR];
 
     void resizeEvent(QResizeEvent*);
 

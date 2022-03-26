@@ -1,18 +1,24 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include <QGraphicsEllipseItem>
-#include <QObject>
 #include <config.h>
+#include <cell.h>
 
 
-class input : public QObject, public QGraphicsEllipseItem
+class input : public cell
 {
-    Q_OBJECT
 public:
-    explicit input();
-    double value;
+    input();
+
+    double getVal();
+    QPointF getPos();
+    void addVal(double);
+
     void del_obj();
+
+
+    double value;
+
 signals:
 
 };
