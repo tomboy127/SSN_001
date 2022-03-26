@@ -6,19 +6,14 @@ output::output()
     this->setRect(-DOTSIZE/2,-DOTSIZE/2,DOTSIZE,DOTSIZE);
     this->setPos(20,20);
     this->setBrush(Qt::red);
-    QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(this);
+    effect = new QGraphicsOpacityEffect(this);
     this->setGraphicsEffect(effect);
-    effect->setOpacity(0.85);
+    effect->setOpacity(OPAC_NF);
 
-
-    setFlag(QGraphicsItem::ItemIsSelectable);
-    //setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemIsFocusable);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+    //this->setZValue(1);
 
-
-
-    //this->setFlag(QGraphicsItem::ItemIsFocusable);
-    //this->setFocus();
 }
 
 void output::del_obj()
@@ -26,9 +21,19 @@ void output::del_obj()
     delete this;
 }
 
+void output::focusInEvent(QFocusEvent *)
+{
+    effect->setOpacity(OPAC_F);
+}
+
+void output::focusOutEvent(QFocusEvent *)
+{
+    effect->setOpacity(OPAC_NF);
+}
+
 double output::getVal()
 {
-   return value;
+    return value;
 }
 
 QPointF output::getPos()

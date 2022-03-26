@@ -78,17 +78,7 @@ void MainWindow::generate_neurons()
                 axon_ptrs[layers-1][i][j]=nullptr;
             }
         }
-        /*
-        for(int i=0;i<layers-1;i++) {
-            for(int j=0;j<neurons;j++){
-                for(int k=0;k<neurons;k++){
-                    axon_ptrs[i+1][j][k]->del_obj();
-                    axon_ptrs[i+1][j][k]=nullptr;
-                }
-            }
-        }
 
-        */
          qDebug()<<"Previous config deleted.";
     }
 

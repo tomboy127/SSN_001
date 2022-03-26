@@ -18,6 +18,10 @@ public:
 
 
     double value;
+    QGraphicsOpacityEffect *effect;
+
+    void focusInEvent(QFocusEvent*);
+    void focusOutEvent(QFocusEvent*);
 
 signals:
 
