@@ -18,6 +18,8 @@ public:
 
     void fire();
     void upPos();
+
+    void updateColor();
     void del_obj();
 
     cell* inp_ptr;
@@ -40,7 +42,9 @@ public:
     void focusOutEvent(QFocusEvent*);
 
 
-    double value;
+    double input=0;
+    double weight=0;
+    double value=0;
     double opacity=0.5;
 signals:
     void setInfoTextUi(QString);

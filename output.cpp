@@ -3,13 +3,17 @@
 
 output::output(int l, int p)
 {
+    value=rnd11();
+    bias=rnd11()/2.0;
+    type="Output";
+
     gridPos="O"+QString::number(p);
     this->setRect(-DOTSIZE/2,-DOTSIZE/2,DOTSIZE,DOTSIZE);
     this->setPos(20,20);
     this->setBrush(Qt::red);
     effect = new QGraphicsOpacityEffect(this);
     this->setGraphicsEffect(effect);
-    effect->setOpacity(OPAC_NF);
+    updateColor();
 
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
@@ -17,45 +21,25 @@ output::output(int l, int p)
 
 }
 
-void output::del_obj()
-{
-    delete this;
-}
-
 void output::focusInEvent(QFocusEvent *)
 {
-    effect->setOpacity(OPAC_F);
-    QString str_out="Type: \t"+type+"\nPosition: \t"+gridPos+"\n";
-    QString str1="Value: \t" + QString::number(value)+"\n";
-
-    emit setInfoTextUi(str_out+str1);
+    //effect->setOpacity(OPAC_F);
+    updateInfoBox();
 }
 
 void output::focusOutEvent(QFocusEvent *)
 {
-    effect->setOpacity(OPAC_NF);
+    //updateColor();
 }
 
-double output::getVal()
+
+void output::updateInfoBox()
 {
-    return value;
+    QString str_out="Type: \t"+type+"\nPosition: \t"+gridPos+"\n\n";
+
+    str_out+="Bias: \t" + QString::number(bias)+"\n";
+    str_out+="Value: \t" + QString::number(value)+"\n";
+
+    emit setInfoTextUi(str_out);
 }
 
-QPointF output::getPos()
-{
-    return QPointF(x(),y());
-}
-
-void output::addVal(double val)
-{
-    value+=val;
-}
-
-QString output::getType(){
-    return type;
-}
-
-QString output::getGridPos()
-{
-    return gridPos;
-}

@@ -6,12 +6,15 @@
 
 axon::axon(cell* input_ptr, cell* output_ptr)
 {    
-  this->setBrush(Qt::yellow);
+  weight=rnd11();
+  value=weight;
+
   setFlag(QGraphicsItem::ItemIsFocusable);
 
   effect = new QGraphicsOpacityEffect(this);
   this->setGraphicsEffect(effect);
-  effect->setOpacity(0.5);
+  updateColor();
+
 
   inp_ptr=input_ptr;
   out_ptr=output_ptr;
@@ -19,12 +22,15 @@ axon::axon(cell* input_ptr, cell* output_ptr)
   inpPos=inp_ptr->getPos();
   outPos=out_ptr->getPos();
 
+
   upPos();
 }
 
 void axon::fire()
 {
-    out_ptr->addVal(inp_ptr->getVal()*value);
+    input=inp_ptr->getVal();
+    value=input*weight;
+    out_ptr->addVal(value);
 }
 
 void axon::upPos()
@@ -34,8 +40,8 @@ void axon::upPos()
     inpPos=inp_ptr->getPos();
     outPos=out_ptr->getPos();
 
-    qDebug()<<"inpPos: "<<inpPos;
-    qDebug()<<"outPos: "<<outPos<<"";
+    //qDebug()<<"inpPos: "<<inpPos;
+   // qDebug()<<"outPos: "<<outPos<<"";
 
     QVector2D dist1=QVector2D((out_ptr->getPos().x()-inp_ptr->getPos().x()),(out_ptr->getPos().y()-inp_ptr->getPos().y()));
 
@@ -59,26 +65,37 @@ void axon::upPos()
 
 }
 
+void axon::updateColor()
+{
+    double val=value;
+    if(val>1)val=1;
+    if(val<-1)val=-1;
+
+    if(val>=0) this->setBrush(Qt::green);
+    if(val<0) this->setBrush(Qt::red);
+    effect->setOpacity(qAbs(val));
+}
+
 void axon::focusInEvent(QFocusEvent *)
 {
-    this->setBrush(Qt::cyan);
+    this->setBrush(Qt::yellow);
     effect->setOpacity(0.8);
     setZValue(1);
 
-    QString str1;
-
     QString str_out="Type: \t"+type+"\nPath: \t";
-    str_out+=inp_ptr->getGridPos()+" -> "+out_ptr->getGridPos()+"\n";
+    str_out+=inp_ptr->getGridPos()+" -> "+out_ptr->getGridPos()+"\n\n";
 
-    str1="Value: \t" + QString::number(value)+"\n";
+    str_out+="Input: \t" + QString::number(input)+"\n";
+    str_out+="Weight: \t" + QString::number(weight)+"\n";
+    str_out+="Output: \t" + QString::number(value)+"\n";
 
-    emit setInfoTextUi(str_out+str1);
+
+    emit setInfoTextUi(str_out);
 }
 
 void axon::focusOutEvent(QFocusEvent *)
 {
-    this->setBrush(Qt::yellow);
-    effect->setOpacity(opacity);
+    updateColor();
     setZValue(0);
     emit setInfoTextUi("Select object");
 }

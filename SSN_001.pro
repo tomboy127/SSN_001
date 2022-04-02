@@ -10,11 +10,13 @@ CONFIG += c++11
 
 SOURCES += \
     axon.cpp \
+    cell.cpp \
     input.cpp \
     main.cpp \
     mainwindow.cpp \
     neuron.cpp \
-    output.cpp
+    output.cpp \
+    random.cpp
 
 HEADERS += \
     axon.h \
@@ -23,7 +25,8 @@ HEADERS += \
     input.h \
     mainwindow.h \
     neuron.h \
-    output.h
+    output.h \
+    random.h
 
 FORMS += \
     mainwindow.ui

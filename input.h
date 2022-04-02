@@ -10,28 +10,16 @@ class input : public cell
     Q_OBJECT
 public:
     input(int l, int p);
-
-    double getVal();
-    QPointF getPos();
-    QString getType();
-    QString getGridPos();
-
-    void addVal(double);
-
-    void del_obj();
-
-    QString type="Input";
-    QString gridPos;
-
-    double value;
-    QGraphicsOpacityEffect *effect;
+    virtual ~input() {};
 
     void focusInEvent(QFocusEvent*);
     void focusOutEvent(QFocusEvent*);
+    virtual void updateInfoBox();
 
 signals:
     void setInfoTextUi(QString);
-
+    void object_selected(cell*);
+    //void object_deselected(cell*);
 };
 
 #endif // INPUT_H

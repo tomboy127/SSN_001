@@ -10,23 +10,11 @@ class neuron : public cell
     Q_OBJECT
 public:
     neuron(int l, int n);
-
-    double getVal();
-    QPointF getPos();
-    QString getType();
-    QString getGridPos();
-    void addVal(double);
-
-    void del_obj();
-
-    QString type="Neuron";
-    QString gridPos;
-
-    double value;
-    QGraphicsOpacityEffect *effect;
+    virtual ~neuron() {};
 
     void focusInEvent(QFocusEvent*);
     void focusOutEvent(QFocusEvent*);
+    virtual void updateInfoBox();
 
 signals:
     void setInfoTextUi(QString);

@@ -6,22 +6,34 @@
 #include <QCoreApplication>
 #include <QGraphicsOpacityEffect>
 #include <math.h>
+#include <random.h>
 
 
-class cell: public QObject, public QGraphicsEllipseItem{    
+class cell: public QObject, public QGraphicsEllipseItem{
+    Q_OBJECT
 public:
-    virtual double getVal()=0;
-    virtual QPointF getPos()=0;
-    virtual QString getType()=0;
-    virtual QString getGridPos()=0;
-    virtual void addVal(double)=0;
-    virtual void del_obj()=0;
 
-    //virtual QVector2D getForce(int=0)=0;
-    //virtual QVector2D getVel()=0;
+    QPointF getPos();
+    QString getType();
+    QString getGridPos();
 
-    //virtual void addForce(QVector2D, int=0)=0;
-    //virtual void move()=0;
+    double getVal();
+    void delVal();
+    void setVal(double);
+    void addVal(double);
+    void updateColor();
+    virtual void updateInfoBox()=0;
+
+    double value;
+    double bias;
+
+    QString type;
+    QString gridPos;
+
+    QGraphicsOpacityEffect *effect;
+
+    double activFun(double);
+    void del_obj();
 
 };
 

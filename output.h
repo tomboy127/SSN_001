@@ -10,23 +10,11 @@ class output : public cell
     Q_OBJECT
 public:
     output(int l, int p);
-
-    double getVal();
-    QPointF getPos();
-    QString getType();
-    QString getGridPos();
-    void addVal(double);
-
-    void del_obj();
-
-    QString type="Output";
-    QString gridPos;
-
-    double value;
-    QGraphicsOpacityEffect *effect;
+    virtual ~output() {};
 
     void focusInEvent(QFocusEvent*);
     void focusOutEvent(QFocusEvent*);
+    virtual void updateInfoBox();
 
 signals:
     void setInfoTextUi(QString);

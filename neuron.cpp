@@ -3,13 +3,19 @@
 
 neuron::neuron(int l, int n)
 {
+    value=rnd11();
+    bias=rnd11()/5.0;
+    type="Neuron";
+
     gridPos="L"+QString::number(l)+" N"+QString::number(n);
     this->setRect(-DOTSIZE/2,-DOTSIZE/2,DOTSIZE,DOTSIZE);
     this->setPos(20,20);
-    this->setBrush(Qt::green);
+
+
     effect = new QGraphicsOpacityEffect(this);
     this->setGraphicsEffect(effect);
-    effect->setOpacity(OPAC_NF);
+    updateColor();
+
 
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
@@ -17,46 +23,25 @@ neuron::neuron(int l, int n)
 
 }
 
-void neuron::del_obj()
-{
-    delete this;
-}
-
 void neuron::focusInEvent(QFocusEvent *)
 {
-    effect->setOpacity(OPAC_F);
-    QString str_out="Type: \t"+type+"\nPosition: \t"+gridPos+"\n";
-    QString str1="Value: \t" + QString::number(value)+"\n";
-
-    emit setInfoTextUi(str_out+str1);
+    updateInfoBox();
 }
 
 void neuron::focusOutEvent(QFocusEvent *)
 {
-    effect->setOpacity(OPAC_NF);
+    //updateColor();
     //emit setInfoTextUi("Select object");
 }
 
-double neuron::getVal()
+void neuron::updateInfoBox()
 {
-    return value;
+    QString str_out="Type: \t"+type+"\nPosition: \t"+gridPos+"\n\n";
+
+    str_out+="Bias: \t" + QString::number(bias)+"\n";
+    str_out+="Value: \t" + QString::number(value)+"\n";
+
+    emit setInfoTextUi(str_out);
 }
 
-QPointF neuron::getPos()
-{
-    return QPointF(x(),y());
-}
 
-void neuron::addVal(double val)
-{
-    value+=val;
-}
-
-QString neuron::getType(){
-    return type;
-}
-
-QString neuron::getGridPos()
-{
-    return gridPos;
-}
