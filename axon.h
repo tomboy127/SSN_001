@@ -35,6 +35,7 @@ public:
     QPointF inpPos;
     QPointF outPos;
     QGraphicsOpacityEffect* effect;
+    QLinearGradient gradient;
 
     QString type="Axon";
 

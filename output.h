@@ -12,12 +12,7 @@ public:
     output(int l, int p);
     virtual ~output() {};
 
-    void focusInEvent(QFocusEvent*);
-    void focusOutEvent(QFocusEvent*);
-    virtual void updateInfoBox();
-
 signals:
-    void setInfoTextUi(QString);
 
 };
 

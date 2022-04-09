@@ -4,7 +4,7 @@
 input::input(int l, int p)
 {
     value=rnd11();
-    bias=rnd11()/2.0;
+    bias=0;//rnd11()/2.0;
     type="Input";
 
     gridPos="I"+QString::number(p);
@@ -21,26 +21,8 @@ input::input(int l, int p)
     //this->setZValue(1);
 }
 
-void input::focusInEvent(QFocusEvent *)
+void input::delVal()
 {
-    updateInfoBox();
-    emit object_selected(this);
-}
-
-void input::focusOutEvent(QFocusEvent *)
-{
-    //updateColor();
-    //emit object_deselected(this);
-}
-
-void input::updateInfoBox()
-{
-    QString str_out="Type: \t"+type+"\nPosition: \t"+gridPos+"\n\n";
-
-    str_out+="Bias: \t" + QString::number(bias)+"\n";
-    str_out+="Value: \t" + QString::number(value)+"\n";
-    str_out+="Output: \t" + QString::number(activFun(value))+"\n";
-
-    emit setInfoTextUi(str_out);
+    value=0;
 }
 

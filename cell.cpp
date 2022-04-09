@@ -53,6 +53,7 @@ void cell::updateColor()
     if(value<-1)val=-1;
 
     effect->setOpacity((qAbs(activFun(val))));
+    setZValue(qAbs(activFun(val)));
     if(val>0) this->setBrush(Qt::green);
     if(val<=0) this->setBrush(Qt::red);
 }
@@ -64,4 +65,27 @@ QString cell::getType(){
 QString cell::getGridPos()
 {
     return gridPos;
+}
+
+void cell::updateInfoBox()
+{
+    QString str_out="Type: \t"+type+"\nPosition: \t"+gridPos+"\n\n";
+
+    str_out+="Bias: \t" + QString::number(bias)+"\n";
+    str_out+="Value: \t" + QString::number(value)+"\n";
+    str_out+="Output: \t" + QString::number(activFun(value))+"\n";
+
+    emit setInfoTextUi(str_out);
+}
+
+void cell::focusInEvent(QFocusEvent *)
+{
+    updateInfoBox();
+    emit object_selected(this);
+}
+
+void cell::focusOutEvent(QFocusEvent *)
+{
+    //updateColor();
+    //emit object_deselected(this);
 }

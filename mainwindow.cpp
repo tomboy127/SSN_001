@@ -38,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->view_2->setMaximumSize(OUT_MAP_SIZE+2,OUT_MAP_SIZE+2);
     ui->view_2->setMinimumSize(OUT_MAP_SIZE+2,OUT_MAP_SIZE+2);
 
+
+
     //for(int i=0;i<10;i++)
     //    rnd11();
     //generate_network();
@@ -69,12 +71,14 @@ void MainWindow::generate_neurons()
         for(int j=0;j<neurons;j++){
             cell_ptrs[i][j]=new neuron(i,j+1);
             QObject::connect(cell_ptrs[i][j], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
+            QObject::connect(cell_ptrs[i][j], SIGNAL(object_selected(cell*)), this, SLOT(onObject_selected(cell*)));
         }
     }
 
     for(int i=0;i<(outputs);i++){
         cell_ptrs[layers-1][i]=new output(layers,i+1);
         QObject::connect(cell_ptrs[layers-1][i], SIGNAL(setInfoTextUi(QString)), this, SLOT(setInfoText(QString)));
+        QObject::connect(cell_ptrs[layers-1][i], SIGNAL(object_selected(cell*)), this, SLOT(onObject_selected(cell*)));
     }
 
     network_generated=1;
@@ -111,6 +115,7 @@ void MainWindow::generate_axons()
 
 void MainWindow::generate_network()
 {
+    srand(time(0));
     timer.restart();
     if(network_generated){
         delete_cells();
@@ -134,35 +139,38 @@ void MainWindow::generate_network()
 
 void MainWindow::generate_out_map()
 {
-    timer.restart();
-    QImage *image = new QImage(OUT_MAP_SIZE,OUT_MAP_SIZE,QImage::Format_RGB32);
-    uint32_t color=0;
-    int32_t color2=0;
+    if(inputs>=2){
+        timer.restart();
+        QImage *image = new QImage(OUT_MAP_SIZE,OUT_MAP_SIZE,QImage::Format_RGB32);
+        uint32_t color=0;
+        int32_t color2=0;
 
-
-    double step=2.0/OUT_MAP_SIZE;
-    cell_ptrs[0][0]->delVal();
-    cell_ptrs[0][0]->addVal(-1);
-    cell_ptrs[0][1]->delVal();
-    cell_ptrs[0][1]->addVal(-1);
-
-    for(int i=0;i<OUT_MAP_SIZE;i++){
-        for(int j=0;j<OUT_MAP_SIZE;j++){
-            calculate_network();
-            color2=qRound(cell_ptrs[layers-1][0]->getVal()*255);
-            if(color2>0) color=color2<<8;
-            else color=(color2*-1)<<16;
-            //qDebug()<<color2;
-            image->setPixelColor(i,j,color);
-            cell_ptrs[0][0]->addVal(step);
-        }
-        cell_ptrs[0][1]->addVal(step);
+        double step=2.0/OUT_MAP_SIZE;
         cell_ptrs[0][0]->delVal();
         cell_ptrs[0][0]->addVal(-1);
+        cell_ptrs[0][1]->delVal();
+        cell_ptrs[0][1]->addVal(-1);
+
+        for(int i=0;i<OUT_MAP_SIZE;i++){
+            for(int j=0;j<OUT_MAP_SIZE;j++){
+                calculate_network();
+                color2=qRound(cell_ptrs[layers-1][0]->getVal()*255);
+                if(color2>0) color=color2<<8;
+                else color=(color2*-1)<<16;
+                //qDebug()<<color2;
+                image->setPixelColor(i,j,color);
+                cell_ptrs[0][0]->addVal(step);
+            }
+            cell_ptrs[0][1]->addVal(step);
+            cell_ptrs[0][0]->delVal();
+            cell_ptrs[0][0]->addVal(-1);
+        }
+        out_map_scene->addPixmap(QPixmap::fromImage(*image));
+        ui->view_2->update();
+        qDebug() << "Out map generated in" << timer.elapsed() << "milliseconds";
     }
-    out_map_scene->addPixmap(QPixmap::fromImage(*image));
-    ui->view_2->update();
-    qDebug() << "Out map generated in" << timer.elapsed() << "milliseconds";
+    else
+        qDebug() << "Out map not generated, not enough inputs.";
 }
 
 void MainWindow::align_neurons()
@@ -245,6 +253,7 @@ void MainWindow::update_aligments()
     for(int i=0;i<inputs;i++){
         for(int j=0;j<neurons;j++){
             axon_ptrs[0][i][j]->upPos();
+            axon_ptrs[0][i][j]->updateColor();
         }
     }
 
@@ -252,6 +261,7 @@ void MainWindow::update_aligments()
         for(int j=0;j<neurons;j++){
             for(int k=0;k<neurons;k++){
                 axon_ptrs[i+1][j][k]->upPos();
+                axon_ptrs[i+1][j][k]->updateColor();
             }
         }
     }
@@ -259,6 +269,7 @@ void MainWindow::update_aligments()
     for(int i=0;i<neurons;i++){
         for(int j=0;j<outputs;j++){
             axon_ptrs[layers-1][i][j]->upPos();
+            axon_ptrs[layers-1][i][j]->updateColor();
         }
     }
 
@@ -360,18 +371,22 @@ void MainWindow::setInfoText(QString str)
     ui->label_obj_info->setText(str);
 }
 
-
 void MainWindow::onObject_selected(cell* ptr)
 {
     cell_selected=ptr;
 
-    ui->dial->setValue(1000*cell_selected->getVal());
-    ui->sliderValue->setValue(1000*cell_selected->getVal());
+    if(!QString::compare(cell_selected->getType(),"Input"))
+    {
+        input_selected=ptr;
 
-    ui->label_slider_name->setText(cell_selected->getType()+" "+cell_selected->getGridPos().back()+":");
+        ui->dial->setValue(1000*input_selected->getVal());
+        ui->sliderValue->setValue(1000*input_selected->getVal());
 
-    ui->sliderValue->setEnabled(1);
-    ui->dial->setEnabled(1);
+        ui->label_slider_name->setText(input_selected->getType()+" "+input_selected->getGridPos().back()+":");
+
+        ui->sliderValue->setEnabled(1);
+        ui->dial->setEnabled(1);
+    }
 
     //make_highlight();
 }
@@ -379,7 +394,7 @@ void MainWindow::onObject_selected(cell* ptr)
 /*
 void MainWindow::on_object_deselected(cell* ptr)
 {
-    cell_selected=ptr;
+    input_selected=ptr;
 
     delete_highlight();
 }
@@ -446,7 +461,6 @@ void MainWindow::on_btn_gen_network_clicked()
 
 }
 
-
 void MainWindow::calculate_network()
 {
 
@@ -492,6 +506,7 @@ void MainWindow::calculate_network()
         }
     }
 }
+
 void MainWindow::on_btnFire_clicked()
 {
     timer.restart();
@@ -499,7 +514,6 @@ void MainWindow::on_btnFire_clicked()
     qDebug() << "Network calculated in" << timer.elapsed() << "milliseconds";
     update_network_colors();
 }
-
 
 void MainWindow::on_btnRnd_clicked()
 {
@@ -519,40 +533,31 @@ void MainWindow::on_btnRnd_clicked()
 
 }
 
-void MainWindow::on_sliderValue_sliderMoved(int position)
-{
-    cell_selected->delVal();
-    cell_selected->addVal(position/1000.0);
-    ui->dial->setValue(position);
-    cell_selected->updateInfoBox();
-    calculate_network();
-    update_network_colors();
-}
-
-
-void MainWindow::on_dial_sliderMoved(int position)
-{
-    cell_selected->setVal(position/1000.0);
-    ui->sliderValue->setValue(position);
-    cell_selected->updateInfoBox(); //funkcja ktora uaktualni info box po przekreceniu dialem
-    calculate_network();
-    update_network_colors();
-}
-
 void MainWindow::on_dial_valueChanged(int position)
 {
     ui->sliderValue->setValue(position);
+    input_selected->setVal(position/1000.0);
+    cell_selected->updateInfoBox();
+    calculate_network();
+    update_network_colors();
+
 }
 
 void MainWindow::on_sliderValue_valueChanged(int position)
 {
     ui->dial->setValue(position);
+    input_selected->delVal();
+    input_selected->addVal(position/1000.0);
+    cell_selected->updateInfoBox();
+    calculate_network();
+    update_network_colors();
+
 }
 
 void MainWindow::make_highlight(){
     highlight = new QGraphicsEllipseItem(nullptr);
     highlight->setRect(-DOTSIZE*HiGHLIGHT/2,-DOTSIZE*HiGHLIGHT/2,DOTSIZE*HiGHLIGHT/1,DOTSIZE*HiGHLIGHT/1);
-    highlight->setPos(cell_selected->getPos());
+    highlight->setPos(input_selected->getPos());
     QRadialGradient gradient = QRadialGradient(QPointF(0,0),DOTSIZE*HiGHLIGHT/2,QPointF(0,0),DOTSIZE/3);
     gradient.setColorAt(0, Qt::black);
     gradient.setColorAt(1, Qt::yellow);

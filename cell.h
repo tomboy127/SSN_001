@@ -22,7 +22,7 @@ public:
     void setVal(double);
     void addVal(double);
     void updateColor();
-    virtual void updateInfoBox()=0;
+    void updateInfoBox();
 
     double value;
     double bias;
@@ -34,6 +34,14 @@ public:
 
     double activFun(double);
     void del_obj();
+
+    void focusInEvent(QFocusEvent*);
+    void focusOutEvent(QFocusEvent*);
+
+signals:
+     void setInfoTextUi(QString);
+     void object_selected(cell*);
+     //void object_deselected(cell*);
 
 };
 

@@ -12,12 +12,7 @@ public:
     neuron(int l, int n);
     virtual ~neuron() {};
 
-    void focusInEvent(QFocusEvent*);
-    void focusOutEvent(QFocusEvent*);
-    virtual void updateInfoBox();
-
 signals:
-    void setInfoTextUi(QString);
 
 };
 

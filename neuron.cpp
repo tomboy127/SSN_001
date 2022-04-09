@@ -22,26 +22,3 @@ neuron::neuron(int l, int n)
     //this->setZValue(1);
 
 }
-
-void neuron::focusInEvent(QFocusEvent *)
-{
-    updateInfoBox();
-}
-
-void neuron::focusOutEvent(QFocusEvent *)
-{
-    //updateColor();
-    //emit setInfoTextUi("Select object");
-}
-
-void neuron::updateInfoBox()
-{
-    QString str_out="Type: \t"+type+"\nPosition: \t"+gridPos+"\n\n";
-
-    str_out+="Bias: \t" + QString::number(bias)+"\n";
-    str_out+="Value: \t" + QString::number(value)+"\n";
-
-    emit setInfoTextUi(str_out);
-}
-
-

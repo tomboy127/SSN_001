@@ -14,8 +14,6 @@
 #include "axon.h"
 
 
-
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -30,7 +28,6 @@ public:
     QGraphicsScene* scene1;
     QGraphicsScene* scene2;
     QGraphicsScene* out_map_scene;
-
 
     void generate_neurons();
     void generate_axons();
@@ -58,6 +55,7 @@ public:
     //cell* input_ptrs[MAX_INP];
     cell* cell_ptrs[MAX_LR][MAX_NR];
     //cell* output_ptrs[MAX_OUT];
+    cell* input_selected=nullptr;
     cell* cell_selected=nullptr;
 
     axon* axon_ptrs[MAX_LR][MAX_NR][MAX_NR];
@@ -73,21 +71,13 @@ public slots:
     //void on_object_deselected(cell*);
 
 private slots:
-
     void on_btn_scene_change_1_clicked();
     void on_btn_scene_change_2_clicked();
     void on_btn_gen_network_clicked();
-
     void on_btnFire_clicked();
-
     void on_btnRnd_clicked();
 
-    void on_sliderValue_sliderMoved(int position);
-
-    void on_dial_sliderMoved(int position);
-
     void on_dial_valueChanged(int value);
-
     void on_sliderValue_valueChanged(int value);
 
 private:

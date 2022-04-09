@@ -45,7 +45,7 @@ void axon::upPos()
 
     QVector2D dist1=QVector2D((out_ptr->getPos().x()-inp_ptr->getPos().x()),(out_ptr->getPos().y()-inp_ptr->getPos().y()));
 
-    const int w=4;
+    const int w=6;
     const int l_disp=dist1.length()/2-DOTSIZE/2-2;
 
     p1.setX(inpPos.x()+dist1.x()/2);p1.setY(inpPos.y()+dist1.y()/2);
@@ -71,15 +71,50 @@ void axon::updateColor()
     if(val>1)val=1;
     if(val<-1)val=-1;
 
-    if(val>=0) this->setBrush(Qt::green);
-    if(val<0) this->setBrush(Qt::red);
+    gradient=QLinearGradient(p2,p4);
+    if(weight>=0){
+        if(value>=0){
+            gradient.setColorAt(0, Qt::green);
+            gradient.setColorAt(1, Qt::green);
+        }
+        else
+        {
+            gradient.setColorAt(0, Qt::red);
+            gradient.setColorAt(1, Qt::red);
+        }
+    }
+    else
+    {
+        if(value>=0){
+            gradient.setColorAt(0.05, Qt::green);
+            gradient.setColorAt(0.3, Qt::yellow);
+            gradient.setColorAt(0.6, Qt::yellow);
+            gradient.setColorAt(0.95, Qt::red);
+        }
+        else
+        {
+            gradient.setColorAt(0.05, Qt::red);
+            gradient.setColorAt(0.4, Qt::yellow);
+            gradient.setColorAt(0.7, Qt::yellow);
+            gradient.setColorAt(0.95, Qt::green);
+        }
+    }
+
+    QBrush brushGradient(gradient);
+    this->setBrush(brushGradient);
+
+    //if(val>=0) this->setBrush(Qt::green);
+    //if(val<0) this->setBrush(Qt::red);
+
+
     effect->setOpacity(qAbs(val));
+    setZValue(qAbs(val));
 }
 
 void axon::focusInEvent(QFocusEvent *)
 {
-    this->setBrush(Qt::yellow);
-    effect->setOpacity(0.8);
+    //this->setBrush(Qt::yellow);
+    //effect->setOpacity(0.8);
     setZValue(1);
 
     QString str_out="Type: \t"+type+"\nPath: \t";

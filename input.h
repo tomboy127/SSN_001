@@ -11,15 +11,9 @@ class input : public cell
 public:
     input(int l, int p);
     virtual ~input() {};
-
-    void focusInEvent(QFocusEvent*);
-    void focusOutEvent(QFocusEvent*);
-    virtual void updateInfoBox();
+    void delVal();
 
 signals:
-    void setInfoTextUi(QString);
-    void object_selected(cell*);
-    //void object_deselected(cell*);
 };
 
 #endif // INPUT_H
